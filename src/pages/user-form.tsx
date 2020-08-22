@@ -2,14 +2,9 @@ import React from 'react'
 import firebase, { firestore } from 'firebase/app'
 import {Label, Form, FormGroup, Input, Button} from 'reactstrap'
 
-import {DBLatestRadioData} from '../config/types'
+import {DBLatestRadioData, WordFormData} from '../config/types'
 import {auth, database} from '../config/firebase'
-
-type WordFormData = {
-  first : string,
-  second : string,
-  third : string
-}
+import {WordsConfirm, WordsForm} from '../components/util'
 
 type UserFormState = {
   wordForm : WordFormData,
@@ -20,27 +15,6 @@ type UserFormState = {
 
 type UserFormProps = {
   uid : string
-}
-
-const InputForm = () => {
-  return (
-    <FormGroup>
-      <Input name="first"  placeholder="hoge" />
-      <Input name="second" placeholder="fuga" />
-      <Input name="third"  placeholder="piyo" />
-    </FormGroup>
-  )
-}
-
-const Confirm = (props:any) => {
-  const words = props.words
-  return (
-    <ul>
-      <li>{words.first}</li>
-      <li>{words.second}</li>
-      <li>{words.third}</li>
-    </ul>
-  )
 }
 
 export default class UserForm extends React.Component<UserFormProps, UserFormState> {
@@ -113,11 +87,11 @@ export default class UserForm extends React.Component<UserFormProps, UserFormSta
         <Label>ワードを予想する</Label>
         {this.state.isFormActive
           ? <Form onSubmit={this.handleSubmit}>
-              <InputForm />
+              <WordsForm />
               <Button type="submit">確定</Button>
             </Form>
           : <>
-              <Confirm words={this.state.wordForm}/>
+              <WordsConfirm words={this.state.wordForm}/>
               {
               (firestore.Timestamp.now() <= this.state.radioData.deadline)
                 ? <Button onClick={this.activeForm}>ワードを予想する</Button>
