@@ -1,8 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {FormGroup, Input} from 'reactstrap'
-
-import {WordFormData} from '../config/types'
 
 export const WordsForm = () => {
   return (

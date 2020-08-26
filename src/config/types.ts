@@ -10,3 +10,9 @@ export type WordFormData = {
   second : string,
   third : string
 }
+
+export type RankingElm = {
+  score : number,
+  name : string,
+  uid : string
+}

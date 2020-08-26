@@ -2,9 +2,10 @@ import React from 'react'
 import firebase, {firestore} from 'firebase/app'
 import {Label, Form, FormGroup, Input, Button} from 'reactstrap'
 
-import {DBLatestRadioData, WordFormData} from '../config/types'
-import {database} from '../config/firebase'
-import {WordsConfirm, WordsForm} from '../components/util'
+import {DBLatestRadioData, WordFormData} from '../../config/types'
+import {database} from '../../config/firebase'
+import {WordsConfirm, WordsForm} from '../../components/util'
+import {closeWords, scoring, updateRanking} from './admin-func'
 
 type LatestRadioData = {
   deadline : Date,
@@ -14,7 +15,7 @@ type LatestRadioData = {
 type AdminFormData = {
   latest : LatestRadioData,
   wordForm : WordFormData,
-  wordNumber : number,
+  wordNumber : Number,
   isWordFormActive : boolean
 }
 
@@ -41,12 +42,20 @@ export default class AdminForm extends React.Component<{}, AdminFormData> {
     database.collection("radiodata").doc("latest").get().then(snap => {
       const data = snap.data() as DBLatestRadioData
       if (!data) return
+      const deadline = data.deadline.toDate()
       this.setState({
         latest: {
-          deadline : data.deadline.toDate(),
+          deadline : deadline,
           number : data.number
         }
       })
+      if(deadline.getTime() < new Date().getTime()) {
+        database.collection("radiodata")
+          .doc(data.number.toString()).get().then( snap => {
+            if(snap.get("summary")) return
+            closeWords(this.state.latest.number)
+          })
+      }
     })
   }
 
@@ -66,15 +75,15 @@ export default class AdminForm extends React.Component<{}, AdminFormData> {
       }
     }, () => (
       database.collection("radiodata").doc("latest").update({
-        deadline : firebase.firestore.Timestamp.fromDate(this.state.latest.deadline),
+        deadline : firestore.Timestamp.fromDate(this.state.latest.deadline),
         number : this.state.latest.number
     })))
   }
 
-  async wordsSubmit(event:React.FormEvent|any){
+  wordsSubmit(event:React.FormEvent|any){
     event.preventDefault()
     const {number, first, second, third} = event.target.elements
-    await this.setState({
+    this.setState({
       wordNumber:(number.value)?(number.value):this.state.wordNumber,
       wordForm : {
         first:(first.value)?(first.value):this.state.wordForm.first,
@@ -82,26 +91,30 @@ export default class AdminForm extends React.Component<{}, AdminFormData> {
         third:(third.value)?(third.value):this.state.wordForm.third
       },
       isWordFormActive:false
-    })
-    const doc = database.collection("radiodata").doc(this.state.wordNumber.toString())
-    doc.onSnapshot(snap=>{
-      if(snap.exists){
-        doc.update({
-          words : this.state.wordForm
-        })
-      }else {
-        doc.set({
-          words : this.state.wordForm
-        })
-      }
+    }, () => {
+      const n = this.state.wordNumber.toString()
+      const doc = database.collection("radiodata").doc(n)
+      doc.onSnapshot(async snap=>{
+        if(snap.exists){
+          await doc.update({
+            words : this.state.wordForm
+          })
+        }else {
+          await doc.set({
+            words : this.state.wordForm
+          })
+        }
+        scoring(n)
+      })
     })
   }
 
   render() {
+    const update = () => updateRanking(this.state.latest.number.toString())
     return(
       <>
         これはアドミンフォーム予定地
-        <FormGroup onSubmit={this.deadlineSubmit}>
+        <Form onSubmit={this.deadlineSubmit}>
           <Label>締切の設定</Label>
           <Input type="number" name="number" placeholder="第n回"/>
           <Input type="date" name="date" />
@@ -114,7 +127,7 @@ export default class AdminForm extends React.Component<{}, AdminFormData> {
             </p>
           </div>
           <Button type="submit">設定</Button>
-        </FormGroup>
+        </Form>
         <FormGroup>
           <Label>正解ワード登録</Label>
           {this.state.isWordFormActive
@@ -130,6 +143,7 @@ export default class AdminForm extends React.Component<{}, AdminFormData> {
             </>
           }
         </FormGroup>
+        <Button color="danger" onClick={update}>ランキングに反映する</Button>
       </>
     )
   }
