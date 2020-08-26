@@ -6,7 +6,7 @@ import {
 import {AuthContext} from '../../contexts/Auth'
 
 const Header = () => {
-  const {currentUser, signout, signin}:any = useContext(AuthContext)
+  const {currentUser, signout}:any = useContext(AuthContext)
   const signButton = currentUser
     ? <NavLink onClick={signout}>Sign Out</NavLink>
     : <NavLink href="/sign-in">Sign In</NavLink>

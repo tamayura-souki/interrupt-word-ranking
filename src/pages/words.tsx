@@ -1,8 +1,8 @@
 import React from 'react'
-import firebase from 'firebase/app'
 import {auth, database} from '../config/firebase'
 import AdminForm from './words-components/admin-form'
 import UserForm from './words-components/user-form'
+import WordsHistory from './words-components/words-history'
 
 type AdminData = {
 	isAdmin: boolean
@@ -48,6 +48,7 @@ class Words extends React.Component<{}, WordsState> {
 			<>
 				<h1>words</h1>
 				<div className="form">{form}</div>
+				<WordsHistory/>
 			</>
 		)
 	}

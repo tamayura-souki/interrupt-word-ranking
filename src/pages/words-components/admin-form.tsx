@@ -1,5 +1,5 @@
 import React from 'react'
-import firebase, {firestore} from 'firebase/app'
+import {firestore} from 'firebase/app'
 import {Label, Form, FormGroup, Input, Button} from 'reactstrap'
 
 import {DBLatestRadioData, WordFormData} from '../../config/types'

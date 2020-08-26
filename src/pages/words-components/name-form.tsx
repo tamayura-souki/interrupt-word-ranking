@@ -1,6 +1,5 @@
 import React from 'react'
 import {Label, Form, Input, Button} from 'reactstrap'
-import firebase, {firestore} from 'firebase/app'
 import { database } from '../../config/firebase'
 
 type NameFormState = {

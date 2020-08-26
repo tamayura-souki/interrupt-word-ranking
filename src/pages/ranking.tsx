@@ -1,6 +1,5 @@
-import React, { JSXElementConstructor } from 'react'
+import React from 'react'
 import {Table} from 'reactstrap'
-import firebase, {firestore} from 'firebase/app'
 
 import {database} from '../config/firebase'
 import {RankingElm} from '../config/types'
@@ -28,7 +27,7 @@ export default class Ranking extends React.Component<{}, RankingState> {
   render() {
     const rankingElms = this.state.rankingData.map((v, i) => {
       return (
-        <tr id={v.uid}>
+        <tr key={v.uid}>
           <th scope="row">{i}</th>
           <td>{v.name}</td>
           <td>{v.score}</td>

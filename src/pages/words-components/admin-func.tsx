@@ -1,6 +1,3 @@
-import React from 'react'
-import firebase, {firestore} from 'firebase/app'
-
 import {WordFormData, RankingElm} from '../../config/types'
 import {database} from '../../config/firebase'
 
@@ -21,7 +18,7 @@ export function closeWords(wordN:Number){
       summary_map.set(second, summary_map.has(second)? summary_map.get(second)+1 : 1)
       summary_map.set(third, summary_map.has(third)? summary_map.get(third)+1 : 1)
     }))
-    const summary = new Array()
+    const summary:Array<{key:string, value:number}> = []
     summary_map.forEach((value, key) => { summary.push({key:key, value:value}) })
     summary.sort((a, b)=>{
       if(a.value < b.value) return 1
@@ -36,7 +33,7 @@ export function closeWords(wordN:Number){
 
 export function scoring(wordN:string){
   database.collection("users").get().then(async snap=>{
-    const ranking:Array<RankingElm> = new Array()
+    const ranking:Array<RankingElm> = []
     const radiodata = (await database.collection("radiodata").doc(wordN).get()).data()
     if(!radiodata) return
     const {first, second, third} = radiodata.words as WordFormData
@@ -51,7 +48,7 @@ export function scoring(wordN:string){
       if(!data) return
       let score = 0
       Object.values(data).forEach(value=>{
-        if(value == interruptWord) score += 3
+        if(value === interruptWord) score += 3
         if(intSubWord.includes(value)) score++
       })
       ranking.push({uid:doc.id, name:name, score:score})
@@ -73,8 +70,8 @@ export function updateRanking(wordN:string) {
       const data = doc.data()
       if(!data) return
       const rankingData:Array<RankingElm> = data.rankingData
-      if(doc.id==wordN) latestData = rankingData
-      if(doc.id=="latest") return
+      if(doc.id===wordN) latestData = rankingData
+      if(doc.id==="latest") return
       rankingData.forEach((v)=>{
         scoreMap.set(v.uid, {
           score: v.score+(scoreMap.has(v.uid)?scoreMap.get(v.uid).score:0),
@@ -89,7 +86,7 @@ export function updateRanking(wordN:string) {
         name: v.name
         })
     })
-    const ranking:Array<RankingElm> = new Array()
+    const ranking:Array<RankingElm> = []
     scoreMap.forEach((v, k)=>{
       ranking.push({uid:k, name:v.name, score:v.score})
     })

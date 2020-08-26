@@ -1,6 +1,6 @@
 import React from 'react'
-import firebase, { firestore } from 'firebase/app'
-import {Label, Form, Button, Alert} from 'reactstrap'
+import { firestore } from 'firebase/app'
+import {Label, Form, Button} from 'reactstrap'
 
 import {DBLatestRadioData, WordFormData} from '../../config/types'
 import {database} from '../../config/firebase'
@@ -44,7 +44,6 @@ export default class UserForm extends React.Component<UserFormProps, UserFormSta
         radioData : radiodata as DBLatestRadioData
 
       }, () => {
-        const radioN = this.state.radioData.number.toString()
         const wordsDoc = database.collection("users").doc(this.state.uid).collection("latest").doc("words")
         wordsDoc.get().then(snap =>{
           if(!snap.exists){
@@ -74,7 +73,6 @@ export default class UserForm extends React.Component<UserFormProps, UserFormSta
       },
       isFormActive:false
     }, () => {
-      const n = this.state.radioData.number.toString()
       database.collection("users").doc(this.state.uid).collection("latest").doc("words").update(
         this.state.wordForm
       ).catch(err =>{

@@ -10,6 +10,7 @@ class Entrance extends React.Component {
 					<h1>よそうこ、InterruptWord予想サイトへ</h1>
 					<p>このサイトはInterruptRadio内の視聴者参加型企画用につくられました。</p>
 					<p>右上からTwitter認証でサインインして、ランキングに挑戦しよう！</p>
+					<p>認証した方はWordsのページに移動して次の、InterruptWordを予想しよう！！</p>
 				</div>
 				<Ranking/>
 			</>
