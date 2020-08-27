@@ -35,7 +35,7 @@ class Words extends React.Component<{}, WordsState> {
 				})
 				database.collection("users").doc(user.uid).get().then(snap=>{
 					if(!snap.exists){
-						database.collection("users").doc(user.uid).set({})
+						database.collection("users").doc(user.uid).set({name:""})
 					}
 				})
 			} else {
