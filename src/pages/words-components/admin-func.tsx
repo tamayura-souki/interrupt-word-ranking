@@ -19,7 +19,7 @@ export function closeWords(wordN:Number){
       summary_map.set(third, summary_map.has(third)? summary_map.get(third)+1 : 1)
     }))
     const summary:Array<{key:string, value:number}> = []
-    summary_map.forEach((value, key) => { summary.push({key:key, value:value}) })
+    summary_map.forEach((value, key) => { if(typeof key === "string") summary.push({key:key, value:value}) })
     summary.sort((a, b)=>{
       if(a.value < b.value) return 1
       if(a.value > b.value) return -1
