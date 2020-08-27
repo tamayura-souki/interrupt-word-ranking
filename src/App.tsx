@@ -10,20 +10,27 @@ import Entrance from './pages/entrance'
 import Words from './pages/words'
 import SignIn from './pages/sign-in'
 
-function App() {
-  return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Header />
-        <Switch>
-          <Route exact path="/" component={Entrance} />
-          <Route path="/words" component={Words} />
-          <Route path="/sign-in" component={SignIn} />
-        </Switch>
-        <Footer />
-      </BrowserRouter>
-    </AuthProvider>
-  );
+class App extends React.Component {
+  componentDidMount(){
+    document.title = "InterruptWords"
+  }
+  render(){
+    return (
+      <>
+        <AuthProvider>
+          <BrowserRouter>
+            <Header />
+            <Switch>
+              <Route exact path="/" component={Entrance} />
+              <Route path="/words" component={Words} />
+              <Route path="/sign-in" component={SignIn} />
+            </Switch>
+            <Footer />
+          </BrowserRouter>
+        </AuthProvider>
+      </>
+    )
+  }
 }
 
 export default App;
