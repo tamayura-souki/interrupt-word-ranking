@@ -33,6 +33,11 @@ class Words extends React.Component<{}, WordsState> {
 						uid: user.uid
 					})
 				})
+				database.collection("users").doc(user.uid).get().then(snap=>{
+					if(!snap.exists){
+						database.collection("users").doc(user.uid).set({})
+					}
+				})
 			} else {
 				this.setState({isAdmin:false, uid:""})
 			}
